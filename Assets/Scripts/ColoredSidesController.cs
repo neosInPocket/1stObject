@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.iOS;
 using UnityEngine;
 using Random = System.Random;
 
@@ -14,11 +11,9 @@ public class ColoredSidesController : MonoBehaviour
 	[SerializeField] private AvaliableColorsSO avaliableColors;
 	private int horizontalTileCount;
 	private int verticalTileCount = 2;
-	private List<ColoredSide> coloredSides;
 	
 	private void Start()
 	{
-		coloredSides = new List<ColoredSide>() { leftSide, rightSide, upSide, downSide };
 		
 		horizontalTileCount = avaliableColors.Colors.Count;
 		
@@ -28,9 +23,10 @@ public class ColoredSidesController : MonoBehaviour
 		downSide.SpawnTiles(horizontalTileCount, verticalTileCount);
 		
 		SetTilesColor(avaliableColors.Colors[1], avaliableColors.Colors, 3, 2);
+		SetSides(SideDirection.Horizontal);
 	}
 	
-	public void ChangeSides(SideDirection sideDirection)
+	public void SetSides(SideDirection sideDirection)
 	{
 		if (sideDirection == SideDirection.Vertical)
 		{

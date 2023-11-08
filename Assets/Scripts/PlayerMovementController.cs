@@ -9,7 +9,6 @@ public class PlayerMovementController : MonoBehaviour
 	[SerializeField] private float speed;
 	private GravityDirection currentGravityDirection;
 	private float screenRatio;
-	private int currentSpeedMultiplier;
 	
 	private void Start()
 	{
@@ -19,12 +18,6 @@ public class PlayerMovementController : MonoBehaviour
 		EnhancedTouchSupport.Enable();
 		TouchSimulation.Enable();
 		Enable();
-	}
-	
-	public void Initialize()
-	{
-		currentGravityDirection = GravityDirection.Vertical;
-		ChangeGravity(GravityDirection.Horizontal);
 	}
 	
 	private void OnPlayerTouchHandler(Finger finger)
@@ -61,9 +54,9 @@ public class PlayerMovementController : MonoBehaviour
 		}
 	}
 	
-	public void ChangeGravity(GravityDirection direction)
+	public void SetGravity(SideDirection direction)
 	{
-		if (direction == GravityDirection.Vertical)
+		if (direction == SideDirection.Vertical)
 		{
 			Physics2D.gravity = new Vector2(0, -9.81f);
 		}
@@ -77,10 +70,13 @@ public class PlayerMovementController : MonoBehaviour
 	{
 		Touch.onFingerDown += OnPlayerTouchHandler;
 		rb.velocity = Vector2.right * speed;
-		currentSpeedMultiplier = 1;
 	}
 	
-	public void Disable() => Touch.onFingerDown -= OnPlayerTouchHandler;
+	public void Disable()
+	{
+		Touch.onFingerDown -= OnPlayerTouchHandler;
+		rb.velocity = Vector2.zero;
+	}
 }
 
 public enum GravityDirection
