@@ -1,24 +1,37 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEditor.SearchService;
 using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class ColoredSide : MonoBehaviour
 {
-	private enum SidePosition
+	[SerializeField] private SidePosition sidePosition;
+	[SerializeField] private ColoredTile coloredTilePrefab;
+	private List<ColoredTile> tiles = new List<ColoredTile>();
+	
+	
+	public void SetTilesColor(List<Color> colors, int colorCount)
 	{
-		Left,
-		Right,
-		Up,
-		Down
+		int loopCount = colorCount;
+		int tilesColorCount = tiles.Count / colorCount;
+		
+		int pointer = 0;
+		
+		for (int i = 0; i < loopCount; i++)
+		{
+			for (int j = 0; j < tilesColorCount; j++)
+			{
+				tiles[pointer + j].SpriteRenderer.color = colors[i];
+			}
+			
+			pointer += tilesColorCount;
+		}
 	}
 	
-	[SerializeField] private SidePosition sidePosition;
-	[SerializeField] private int tileCount;
-	[SerializeField] private ColoredTile coloredTilePrefab;
-	
-	private void Start()
+	public void SpawnTiles(int horizontalTileCount, int verticalTileCount)
 	{
 		var screenSize = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 		
@@ -27,17 +40,18 @@ public class ColoredSide : MonoBehaviour
 		
 		if (sidePosition == SidePosition.Left || sidePosition == SidePosition.Right)
 		{
-			tileHeight = 2 * screenSize.y / tileCount;
+			tileHeight = 2 * screenSize.y / horizontalTileCount;
 			tileWidth = 2 * screenSize.x / coloredTilePrefab.XSizeMultiplier;
 		}
 		
 		if (sidePosition == SidePosition.Down || sidePosition == SidePosition.Up)
 		{
-			tileWidth = 2 * screenSize.x / tileCount;
+			tileWidth = 2 * screenSize.x / verticalTileCount;
 			tileHeight = 2 * screenSize.x / coloredTilePrefab.XSizeMultiplier;
 		}
 		
 		Vector2 firstTilePosition = Vector2.zero;
+		
 		
 		switch(sidePosition)
 		{
@@ -60,21 +74,40 @@ public class ColoredSide : MonoBehaviour
 		
 		Vector2 currentPosition = firstTilePosition;
 		
-		for (int i = 0; i < tileCount; i++)
+		if (sidePosition == SidePosition.Left || sidePosition == SidePosition.Right)
 		{
-			var tile = Instantiate(coloredTilePrefab, currentPosition, Quaternion.identity, transform);
-			tile.SpriteRenderer.size = new Vector2(tileWidth, tileHeight);
-			tile.Collider.size = new Vector2(tileWidth, tileHeight);
-			
-			if (sidePosition == SidePosition.Left || sidePosition == SidePosition.Right)
+			for (int i = 0; i < horizontalTileCount; i++)
 			{
+				var tile = Instantiate(coloredTilePrefab, currentPosition, Quaternion.identity, transform);
+				tile.SpriteRenderer.size = new Vector2(tileWidth, tileHeight);
+				tile.Collider.size = new Vector2(tileWidth, tileHeight);
 				currentPosition.y -= tileHeight;
+				tile.sidePosition = sidePosition;
+				
+				tiles.Add(tile);
 			}
-			
-			if (sidePosition == SidePosition.Down || sidePosition == SidePosition.Up)
+		}
+		
+		if (sidePosition == SidePosition.Down || sidePosition == SidePosition.Up)
+		{
+			for (int i = 0; i < verticalTileCount; i++)
 			{
+				var tile = Instantiate(coloredTilePrefab, currentPosition, Quaternion.identity, transform);
+				tile.SpriteRenderer.size = new Vector2(tileWidth, tileHeight);
+				tile.Collider.size = new Vector2(tileWidth, tileHeight);
 				currentPosition.x += tileWidth;
+				tile.sidePosition = sidePosition;
+				
+				tiles.Add(tile);
 			}
 		}
 	}
 }
+
+public enum SidePosition
+	{
+		Left,
+		Right,
+		Up,
+		Down
+	}
