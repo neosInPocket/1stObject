@@ -18,7 +18,6 @@ public class GameController : MonoBehaviour
 	{
 		defaultDeltaTime = Time.fixedDeltaTime;
 		Restart();
-		SaveLoad.Reset();
 	}
 	
 	public void Restart()
@@ -40,7 +39,7 @@ public class GameController : MonoBehaviour
 		progressBar.UpdateText(SaveLoad.currentLevelSave);
 		isHardMode = false;
 		
-		
+		Debug.Log(SaveLoad.tutorial);
 		if (SaveLoad.tutorial)
 		{
 			SaveLoad.tutorial = false;

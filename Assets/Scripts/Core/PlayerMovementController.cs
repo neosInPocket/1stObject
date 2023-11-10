@@ -16,9 +16,12 @@ public class PlayerMovementController : MonoBehaviour
 	private float screenRatio;
 	public Action<ColoredTile> PlayerTileTouched;
 	private ColoredTile lastTile;
+	private float[] gravityMultipliers = { 1, 0.9f, 0.8f, 0.7f };
+	private float currentGravityMultiplier;
 	
 	private void Awake()
 	{
+		currentGravityMultiplier = gravityMultipliers[SaveLoad.gravitySaves];
 		var screenSize = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 		screenRatio = screenSize.y / screenSize.x;
 		
@@ -73,22 +76,22 @@ public class PlayerMovementController : MonoBehaviour
 		{
 			if (transform.position.x > 0)
 			{
-				Physics2D.gravity = new Vector2(-9.81f / screenRatio, 0);
+				Physics2D.gravity = new Vector2(-9.81f * currentGravityMultiplier / screenRatio, 0);
 				playerJumpArrow.RotateArrow(Vector2.right);
 			}
 			else
 			{
-				Physics2D.gravity = new Vector2(9.81f / screenRatio, 0);
+				Physics2D.gravity = new Vector2(9.81f * currentGravityMultiplier / screenRatio, 0);
 				playerJumpArrow.RotateArrow(Vector2.left);
 			}
 			
 			if (transform.position.y > 0)
 			{
-				rb.velocity = new Vector2(0, -speed);
+				rb.velocity = new Vector2(0, -speed * currentGravityMultiplier);
 			}
 			else
 			{
-				rb.velocity = new Vector2(0, speed);
+				rb.velocity = new Vector2(0, speed * currentGravityMultiplier);
 			}
 			
 			currentGravityDirection = GravityDirection.Horizontal;
@@ -97,22 +100,22 @@ public class PlayerMovementController : MonoBehaviour
 		{
 			if (transform.position.y > 0)
 			{
-				Physics2D.gravity = new Vector2(0, -9.81f);
+				Physics2D.gravity = new Vector2(0, -9.81f * currentGravityMultiplier);
 				playerJumpArrow.RotateArrow(Vector2.up);
 			}
 			else
 			{
-				Physics2D.gravity = new Vector2(0, 9.81f);
+				Physics2D.gravity = new Vector2(0, 9.81f * currentGravityMultiplier);
 				playerJumpArrow.RotateArrow(Vector2.down);
 			}
 			
 			if (transform.position.x > 0)
 			{
-				rb.velocity = new Vector2(-speed, 0);
+				rb.velocity = new Vector2(-speed * currentGravityMultiplier, 0);
 			}
 			else
 			{
-				rb.velocity = new Vector2(speed, 0);
+				rb.velocity = new Vector2(speed * currentGravityMultiplier, 0);
 			}
 			
 			currentGravityDirection = GravityDirection.Vertical;
@@ -123,7 +126,7 @@ public class PlayerMovementController : MonoBehaviour
 	{
 		Touch.onFingerDown += OnPlayerTouchHandler;
 		rb.constraints = RigidbodyConstraints2D.None;
-		rb.velocity = Vector2.right * speed;
+		rb.velocity = Vector2.right * speed * currentGravityMultiplier;
 		lastTile = null;
 	}
 	

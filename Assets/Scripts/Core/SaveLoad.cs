@@ -76,11 +76,44 @@ public static class SaveLoad
 	}
 	private static int m_maxLifesSave;
 	
+	public static int gravitySaves
+	{
+		get
+		{
+			return PlayerPrefs.GetInt("gravitySaves", 1);
+		}
+		
+		set
+		{
+			m_gravitySave = value;
+			PlayerPrefs.SetInt("gravitySaves", m_gravitySave);
+		}
+	}
+	private static int m_gravitySave;
+	
+	public static float soundVolume
+	{
+		get
+		{
+			return PlayerPrefs.GetFloat("soundVolume", 1f);
+		}
+		
+		set
+		{
+			m_soundVolume = value;
+			PlayerPrefs.SetFloat("soundVolume", m_soundVolume);
+		}
+	}
+	private static float m_soundVolume;
+	
+	
 	public static void Reset()
 	{
-		playerCoinsSave = 100;
+		playerCoinsSave = 10;
 		maxLifesSave = 1;
 		currentLevelSave = 1;
+		gravitySaves = 0;
 		tutorial = true;
+		soundVolume = 1f;
 	}
 }

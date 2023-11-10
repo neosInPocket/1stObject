@@ -57,7 +57,6 @@ public class MenusScrollView : MonoBehaviour
 		while (Mathf.Abs(content.position.x - destination) > 10)
 		{
 			distance = Mathf.Abs(destination - content.position.x);
-			Debug.Log(distance);
 			content.position = new Vector2(content.position.x + speed * direction * (distance + 10) * Time.deltaTime, content.position.y);
 			yield return new WaitForEndOfFrame();
 		}
@@ -68,6 +67,6 @@ public class MenusScrollView : MonoBehaviour
 	private void OnDisable()
 	{
 		Touch.onFingerUp -= OnFingerUpHandler;
-		Touch.onFingerDown += OnFingerDownHandler;
+		Touch.onFingerDown -= OnFingerDownHandler;
 	}
 }
