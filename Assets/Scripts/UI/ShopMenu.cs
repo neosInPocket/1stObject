@@ -12,7 +12,7 @@ public class ShopMenu : MonoBehaviour
 	
 	private void Awake()
 	{
-		SaveLoad.Reset();
+		//SaveLoad.Reset();
 	}
 	
 	private void Start()
