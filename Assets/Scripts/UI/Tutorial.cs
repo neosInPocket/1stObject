@@ -15,7 +15,7 @@ public class Tutorial : MonoBehaviour
 		TouchSimulation.Enable();
 		
 		Touch.onFingerDown += Character1;
-		characterText.text = "Welcome to Colored!";
+		characterText.text = "Welcome to Fortune Tiger: Fairy Quest!";
 	}
 	
 	public void PlayTutorial()

@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Screen = UnityEngine.Screen;
-using UnityEngine.UI;
 
 public class MenusScrollView : MonoBehaviour
 {
@@ -54,7 +53,7 @@ public class MenusScrollView : MonoBehaviour
 		var direction = (destination - content.position.x) / Mathf.Abs(destination - content.position.x);
 		float distance = 0;
 		
-		while (Mathf.Abs(content.position.x - destination) > 10)
+		while (Mathf.Abs(content.position.x - destination) > 1)
 		{
 			distance = Mathf.Abs(destination - content.position.x);
 			content.position = new Vector2(content.position.x + speed * direction * (distance + 10) * Time.deltaTime, content.position.y);

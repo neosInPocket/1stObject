@@ -22,6 +22,7 @@ public class PlayerMovementController : MonoBehaviour
 	private void Awake()
 	{
 		currentGravityMultiplier = gravityMultipliers[SaveLoad.gravitySaves];
+		Physics2D.gravity = new Vector2(0, -9.81f * currentGravityMultiplier);
 		var screenSize = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 		screenRatio = screenSize.y / screenSize.x;
 		
