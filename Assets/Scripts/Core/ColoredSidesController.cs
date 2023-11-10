@@ -12,7 +12,7 @@ public class ColoredSidesController : MonoBehaviour
 	[SerializeField] private AvaliableColorsSO avaliableColors;
 	
 	private int horizontalTileCount;
-	private int verticalTileCount = 2;
+	private int verticalTileCount = 4;
 	public Color CurrentColor;
 	public AvaliableColorsSO AvaliableColors { get; set; }
 	

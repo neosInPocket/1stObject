@@ -11,30 +11,14 @@ public class CountScreen : MonoBehaviour
 	
 	public void PlayCountScreen()
 	{
+		gameObject.SetActive(true);
 		StartCoroutine(Count());
 	}
 	
 	private IEnumerator Count()
 	{
-		text.text = "3";
-		animator.SetTrigger("Popup");
-		yield return new WaitForSeconds(1);
-		animator.SetTrigger("Hide");
-		
-		text.text = "2";
-		animator.SetTrigger("Popup");
-		yield return new WaitForSeconds(1);
-		animator.SetTrigger("Hide");
-		
-		text.text = "1";
-		animator.SetTrigger("Popup");
-		yield return new WaitForSeconds(1);
-		animator.SetTrigger("Hide");
-		
+		yield return new WaitForSeconds(220f / 60f);
 		OnCountEnd?.Invoke();
-		text.text = "GO";
-		animator.SetTrigger("Popup");
-		yield return new WaitForSeconds(1);
-		animator.SetTrigger("Hide");
+		gameObject.SetActive(false);
 	}
 }

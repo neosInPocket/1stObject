@@ -18,18 +18,18 @@ public static class SaveLoad
 	}
 	private static int m_currentLevelSave;
 	
-	public static bool isTutorialPassed
+	public static bool tutorial 
 	{
 		get
 		{
-			var tutorInt = PlayerPrefs.GetInt("isTutorialPassed", 0);
-			if (tutorInt == 0)
+			var tutorInt = PlayerPrefs.GetInt("tutorial", 1);
+			if (tutorInt == 1)
 			{
-				return false;
+				return true;
 			}
 			else
 			{
-				return true;
+				return false;
 			}
 		}
 		
@@ -37,16 +37,14 @@ public static class SaveLoad
 		{
 			if (value)
 			{
-				m_isTutorialPassed = 1;
+				PlayerPrefs.SetInt("tutorial", 1);
 			}
 			else
 			{
-				m_isTutorialPassed = 0;
+				PlayerPrefs.SetInt("tutorial", 0);
 			}
-			PlayerPrefs.SetInt("isTutorialPassed", m_isTutorialPassed);
 		}
 	}
-	private static int m_isTutorialPassed;
 	
 	public static int playerCoinsSave
 	{
@@ -83,6 +81,6 @@ public static class SaveLoad
 		playerCoinsSave = 100;
 		maxLifesSave = 1;
 		currentLevelSave = 1;
-		isTutorialPassed = false;
+		tutorial = true;
 	}
 }

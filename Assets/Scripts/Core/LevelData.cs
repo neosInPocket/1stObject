@@ -29,7 +29,7 @@ public class LevelData
 	
 	public void IncreaseCurrentPoints(int value)
 	{
-		if (currentPoints + value > maxPoints)
+		if (currentPoints + value >= maxPoints)
 		{
 			currentPoints = maxPoints;
 			PointsIncreased?.Invoke(currentPoints);

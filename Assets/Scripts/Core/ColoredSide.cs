@@ -7,6 +7,8 @@ public class ColoredSide : MonoBehaviour
 	[SerializeField] private ColoredTile coloredTilePrefab;
 	[SerializeField] private RectTransform interfaceRectTransform;
 	private List<ColoredTile> tiles = new List<ColoredTile>();
+	public float offset { get; set; }
+	public float offsetTop { get; set; }
 	
 	public void SetTilesColor(List<Color> colors, int colorCount)
 	{
@@ -98,6 +100,9 @@ public class ColoredSide : MonoBehaviour
 				tiles.Add(tile);
 			}
 		}
+		
+		offset = tileHeight > tileWidth ? tileWidth : tileHeight;
+		offsetTop = (1 - interfaceRectTransform.anchorMin.y) * 2 * screenSize.y + offset;
 	}
 	
 	public void Disable()

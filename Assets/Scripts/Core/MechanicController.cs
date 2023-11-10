@@ -7,12 +7,22 @@ public class MechanicController : MonoBehaviour
 	[SerializeField] private PlayerController playerController;
 	[SerializeField] private float gravityChangeChance;
 	private SideDirection currentSideDirection;
+	private ColoredTile lastTile;
+	public int currentXHardness { get; set; }
+	public int currentYHardness { get; set; }
 	
 	private void Start()
 	{
 		playerMovementController.PlayerTileTouched += PlayerTileTouched;
 		sidesController.Initialize();
-		playerController.CurrentColor = sidesController.SetTilesColor(3, 2);
+	}
+	
+	public void Initialize()
+	{
+		lastTile = null;
+		currentXHardness = 3;
+		currentYHardness = 2;
+		playerController.CurrentColor = sidesController.SetTilesColor(currentXHardness, currentYHardness);
 		
 		currentSideDirection = SideDirection.Horizontal;
 		SetDirection(SideDirection.Horizontal);
@@ -20,10 +30,19 @@ public class MechanicController : MonoBehaviour
 	
 	private void PlayerTileTouched(ColoredTile tile)
 	{
+		if (lastTile != null)
+		{
+			if (lastTile.sidePosition == tile.sidePosition)
+			{
+				return;
+			}
+		}
+		
 		if (tile.TileColor == playerController.CurrentColor && tile.SpriteRenderer.enabled)
 		{
-			playerController.CurrentColor = sidesController.SetTilesColor(3, 2);
-			if (Random.Range(0, 1) < gravityChangeChance)
+			lastTile = tile;
+			playerController.CurrentColor = sidesController.SetTilesColor(currentXHardness, currentYHardness);
+			if (Random.Range(0, 1f) < gravityChangeChance)
 			{
 				ToggleSides();
 			}
@@ -33,13 +52,14 @@ public class MechanicController : MonoBehaviour
 		
 		if (!tile.SpriteRenderer.enabled || (tile.TileColor != playerController.CurrentColor && tile.SpriteRenderer.enabled))
 		{
+			lastTile = tile;
 			if (playerController.TakeDamage())
 			{
 				 playerMovementController.Disable();
 			}
 			else
 			{
-				playerController.CurrentColor = sidesController.SetTilesColor(3, 2);
+				playerController.CurrentColor = sidesController.SetTilesColor(currentXHardness, currentYHardness);
 				if (Random.Range(0, 1) < gravityChangeChance)
 				{
 					ToggleSides();
@@ -61,7 +81,7 @@ public class MechanicController : MonoBehaviour
 		}
 	}
 	
-	private void SetDirection(SideDirection direction)
+	public void SetDirection(SideDirection direction)
 	{
 		sidesController.SetSides(direction);
 		playerMovementController.SetGravity(direction);

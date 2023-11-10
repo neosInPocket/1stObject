@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -11,25 +8,42 @@ public class GameController : MonoBehaviour
 	[SerializeField] private Tutorial tutorial;
 	[SerializeField] private CountScreen countScreen;
 	[SerializeField] private DeathScreen deathScreen;
+	[SerializeField] private ProgressBar progressBar;
+	[SerializeField] private PopupText popupText;
 	private LevelData levelData;
+	private bool isHardMode;
+	private float defaultDeltaTime;
 	
 	private void Start()
 	{
+		defaultDeltaTime = Time.fixedDeltaTime;
 		Restart();
-		SaveLoad.isTutorialPassed = false;
+		SaveLoad.Reset();
 	}
 	
 	public void Restart()
 	{
+		Time.fixedDeltaTime = defaultDeltaTime;
+		Time.timeScale = 1;
+		
 		levelData = new LevelData();
 		levelData.PointsIncreased += PointsIncreasedHandler;
 		levelData.LevelCompleted += LevelCompleted;
 		playerController.CoinCollected += PlayerCoinCollectedHandler;
 		playerController.TakeDamageEvent += PlayerTakeDamageHandler;
 		playerController.Initialize();
+		progressBar.Fill(0);
+		mechanicController.SetDirection(SideDirection.Horizontal);
+		playerMovementController.EnableVisuals();
+		mechanicController.Initialize();
+		progressBar.RefreshHearts(playerController.CurrentLifes);
+		progressBar.UpdateText(SaveLoad.currentLevelSave);
+		isHardMode = false;
 		
-		if (!SaveLoad.isTutorialPassed)
+		
+		if (SaveLoad.tutorial)
 		{
+			SaveLoad.tutorial = false;
 			tutorial.TutorialEnded += OnTutorialEndHandler;
 			tutorial.PlayTutorial();
 		}
@@ -54,7 +68,17 @@ public class GameController : MonoBehaviour
 	
 	private void PointsIncreasedHandler(int points)
 	{
+		Debug.Log(points);
 		
+		if (points >= levelData.MaxPoints * 3 / 4 && !isHardMode)
+		{
+			isHardMode = true;
+			mechanicController.currentXHardness = 6;
+			mechanicController.currentYHardness = 4;
+			popupText.Show("HARD MODE!");
+		}
+		
+		progressBar.Fill((float)points / (float)levelData.MaxPoints);
 	}
 	
 	private void LevelCompleted(int reward)
@@ -65,6 +89,8 @@ public class GameController : MonoBehaviour
 		playerMovementController.Disable();
 		
 		deathScreen.Show(true, reward);
+		SaveLoad.currentLevelSave += 1;
+		SaveLoad.playerCoinsSave += reward;
 	}
 	
 	private void PlayerCoinCollectedHandler()
@@ -77,6 +103,11 @@ public class GameController : MonoBehaviour
 		if (lifes == 0)
 		{
 			deathScreen.Show(false);
+			playerController.CoinCollected -= PlayerCoinCollectedHandler;
+			levelData.PointsIncreased -= PointsIncreasedHandler;
+			levelData.LevelCompleted -= LevelCompleted;
 		}
+		
+		progressBar.RefreshHearts(lifes);
 	}
 }

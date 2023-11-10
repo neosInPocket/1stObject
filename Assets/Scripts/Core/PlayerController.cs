@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private SpriteRenderer spriteRenderer;
 	[SerializeField] private TrailRenderer trailRenderer;
 	[SerializeField] private ParticleSystem deadParticleSystem;
+	[SerializeField] private ParticleSystem takeDamageParticleSystem;
 	
 	public Action CoinCollected;
 	public Action<int> TakeDamageEvent;
@@ -22,10 +23,11 @@ public class PlayerController : MonoBehaviour
 	}
 	
 	private int currentLifes;
+	public int CurrentLifes => currentLifes;
 	
 	public void Initialize()
 	{
-		currentLifes = 2;//SaveLoad.maxLifesSave;
+		currentLifes = SaveLoad.maxLifesSave;
 	}
 
 	private void OnTriggerEnter2D(Collider2D collider)
@@ -50,7 +52,7 @@ public class PlayerController : MonoBehaviour
 		{
 			currentLifes--;
 			TakeDamageEvent?.Invoke(currentLifes);
-			//StartCoroutine(TakeDamageEffect());
+			StartCoroutine(TakeDamageEffect());
 			return false;
 		}
 	}
@@ -64,12 +66,8 @@ public class PlayerController : MonoBehaviour
 	
 	private IEnumerator TakeDamageEffect()
 	{
-		for (int i = 0; i < 8; i++)
-		{
-			spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.3f);
-			yield return new WaitForSeconds(0.3f);
-			spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
-			yield return new WaitForSeconds(0.3f);
-		}
+		var effect = Instantiate(takeDamageParticleSystem, transform.position, Quaternion.identity);
+		yield return new WaitForSeconds(effect.main.duration);
+		Destroy(effect.gameObject);
 	}
 }
